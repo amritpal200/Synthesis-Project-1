@@ -382,7 +382,7 @@ def train_skipgram(
 			
 			if print_every and (i % print_every[1]) == 0 and idx2word is not None:
 				str2 = ""
-				valid_idxs, similarities = cosine_similarity(model.in_embed)
+				valid_idxs, similarities = cosine_similarity(model.in_embed, device)
 				_, closest_idxs = similarities.topk(6)
 				valid_idxs, closest_idxs = valid_idxs.to('cpu'), closest_idxs.to('cpu')
 				
