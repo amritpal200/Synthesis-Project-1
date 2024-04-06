@@ -94,9 +94,9 @@ def tokenize_corpus(
 	Tokenizes a given corpus using a pre-trained tokenizer.
 		Returns a list of tokenized sentences.
 	"""
-	tokenized_corpus = []
-	for sentence in tqdm(corpus):
-		tokenized_corpus.append(tokenizer.encode(sentence).tokens)
+	tokenized_corpus = tokenizer.encode_batch(corpus)
+	print("Corpus tokenized. Extracting tokens...")
+	tokenized_corpus = [s.tokens for s in tqdm(tokenized_corpus)]
 	return tokenized_corpus
 
 def trim_corpus(
