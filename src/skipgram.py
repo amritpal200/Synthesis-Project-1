@@ -45,9 +45,35 @@ def train_tokenizer(
 		tokenizer.save_model(save_dir, prefix=save_prefix)
 	return tokenizer
 
+def refine_tokenizer(
+		tokenizer: CharBPETokenizer,
+		corpus: Union[str, Iterable[str]],
+		extended_vocab_size: int=1200,
+		min_frequency: int=10,
+		special_tokens: Iterable[str]=["<unk>"],
+		save_prefix: Optional[str]=None,
+		save_dir: Optional[str]=None
+) -> CharBPETokenizer:
+	"""
+	Refines a pre-trained tokenizer on a given corpus.
+		Returns the refined tokenizer instance.
+	"""
+	initial_alphabet = list(set((list(set("".join(corpus)))+list(tokenizer.get_vocab().keys()))))
+	tokenizer.train_from_iterator(
+		corpus,
+		vocab_size=extended_vocab_size,
+		min_frequency=min_frequency,
+		special_tokens=special_tokens,
+		initial_alphabet=initial_alphabet)
+	if save_prefix and save_dir:
+		tokenizer.save_model(save_dir, prefix=save_prefix)
+	return tokenizer
+
 def load_tokenizer(
 		model_dir: str,
-		model_prefix: str
+		model_prefix: str,
+		suffix: str="</w>",
+		bert_normalizer: bool=True
 ) -> CharBPETokenizer:
 	"""
 	Loads a pre-trained tokenizer from a given directory.
@@ -55,7 +81,9 @@ def load_tokenizer(
 	"""
 	return CharBPETokenizer(
 		vocab=os.path.join(model_dir, model_prefix + "-vocab.json"),
-		merges=os.path.join(model_dir, model_prefix + "-merges.txt")
+		merges=os.path.join(model_dir, model_prefix + "-merges.txt"),
+		suffix=suffix,
+		bert_normalizer=bert_normalizer
 	)
 
 def tokenize_corpus(
