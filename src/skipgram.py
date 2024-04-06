@@ -329,7 +329,21 @@ class SkipGram(nn.Module):
 		super()._apply(fn, recurse)
 		self.device = next(self.parameters()).device
 		return self
-	
+
+class PreTrainedSkipGram(SkipGram):
+	def __init__(
+			self,
+			n_vocab: int,
+			n_embed: int,
+			in_embed: nn.Embedding,
+			out_embed: nn.Embedding,
+			noise_dist: Optional[torch.Tensor]=None,
+	):
+		super(PreTrainedSkipGram, self).__init__(n_vocab, n_embed, noise_dist)
+		original_n_vocab, original_n_embed = in_embed.weight.shape
+		self.in_embed.weight.data[:original_n_vocab] = in_embed.weight.data
+		self.out_embed.weight.data[:original_n_vocab] = out_embed.weight.data
+
 class NegativeSamplingLoss(nn.Module):
 	# negative sampling: https://www.baeldung.com/cs/nlps-word2vec-negative-sampling
 	def __init__(self):
