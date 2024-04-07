@@ -140,16 +140,21 @@ def refine_tokenizer(
 	we_want = set()
 	cont = False
 	while not merges_stack.empty():
+		stacked = False
 		merge = merges_stack.get()
 		merge_added = merge_present(merge) # merge already in new merges
 		result_token_in_vocab = "".join(merge) in new_vocab
 		we_want_result_token = "".join(merge) in we_want
 		if not merge_added and (result_token_in_vocab or we_want_result_token):
 			for m in merge:
-				if m in new_vocab: continue
 				if not merge_result_present(m):
 					m_merge = get_merge(m)
-					assert m_merge is not None, f"Merge {m} not found"
+					if m_merge is None:
+						assert m in new_vocab
+						continue
+					if not stacked:
+						merges_stack.put(merge)
+						stacked = True
 					merges_stack.put(m_merge)
 					we_want.add(m)
 					cont = True
