@@ -177,8 +177,8 @@ def refine_tokenizer(
 	with open(os.path.join(save_dir, save_prefix+"-merges.txt"), "w") as f:
 		f.write(version)
 		f.write("\n".join([" ".join(merge) for merge in new_merges]))
-	print("Progress: 99%")
-	
+	print("Progress: 99%. Cross your fingers!")
+
 	tokenizer = load_tokenizer(save_dir, save_prefix)
 	print("Progress: 100%")
 	
@@ -226,14 +226,14 @@ def trim_corpus(
 	"""
 	token_counts = Counter([token for sentence in tokenized_corpus for token in sentence])
 	trimmed = []
-	for url in tqdm(tokenized_corpus):
-		trimmed_url = []
-		for token in url:
+	for sent in tqdm(tokenized_corpus):
+		trimmed_sent = []
+		for token in sent:
 			if token_counts[token] >= min_freq:
-				trimmed_url.append(token)
+				trimmed_sent.append(token)
 			elif trim is not None:
-				trimmed_url.append(trim)
-		trimmed.append(trimmed_url)
+				trimmed_sent.append(trim)
+		trimmed.append(trimmed_sent)
 	return trimmed
 
 def create_lookup_tables(
@@ -261,12 +261,12 @@ def subsample(
 		Returns the subsampled corpus.
 	"""
 	tokens_idx = [word2idx[word] for word in [token for sentence in tokenized_corpus for token in sentence]]
-	corpus_idx = [[word2idx[word] for word in url] for url in tokenized_corpus]
+	corpus_idx = [[word2idx[word] for word in sent] for sent in tokenized_corpus]
 	token_counts = Counter(tokens_idx)
 	total_tokens = len(tokens_idx)
 	freq_ratios = {token: count / total_tokens for token, count in token_counts.items()}
 	p_drop = {token: 1 - np.sqrt(threshold / freq_ratios[token]) for token in token_counts}
-	subsampled_corpus = [[token for token in url if random.random() < (1 - p_drop[token])] for url in tqdm(corpus_idx)]
+	subsampled_corpus = [[token for token in sent if random.random() < (1 - p_drop[token])] for sent in tqdm(corpus_idx)]
 	l1 = len(tokens_idx)
 	l2 = len([token for sentence in subsampled_corpus for token in sentence])
 	print(f"Subsampled {l1 - l2} tokens from the corpus. {l2/l1:.2%} of the corpus remaining.")
