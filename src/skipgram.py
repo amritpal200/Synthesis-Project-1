@@ -14,6 +14,7 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import json
 import re
+from queue import LifoQueue
 
 def train_tokenizer(
 		corpus: Union[str, Iterable[str]],
@@ -46,27 +47,141 @@ def train_tokenizer(
 	return tokenizer
 
 def refine_tokenizer(
-		tokenizer: CharBPETokenizer,
+		model_dir: str,
+		model_prefix: str,
 		corpus: Union[str, Iterable[str]],
 		extended_vocab_size: int=1200,
 		min_frequency: int=10,
+		suffix: str="</w>",
+		bert_normalizer: bool=True,
 		special_tokens: Iterable[str]=["<unk>"],
 		save_prefix: Optional[str]=None,
 		save_dir: Optional[str]=None
 ) -> CharBPETokenizer:
 	"""
 	Refines a pre-trained tokenizer on a given corpus.
+	Note: the resulting tokenizer vocab size might end up larger than extended_vocab_size.
 		Returns the refined tokenizer instance.
 	"""
-	initial_alphabet = list(set((list(set("".join(corpus)))+list(tokenizer.get_vocab().keys()))))
-	tokenizer.train_from_iterator(
+	print("Progress: 0%")
+	# set initial alphabet to be the union of the old alphabet and the new alphabet
+	old_tokenizer = load_tokenizer(model_dir, model_prefix)
+	old_alphabet = set("".join(old_tokenizer.get_vocab().keys()))
+	initial_alphabet = list(old_alphabet.union(set("".join(corpus))))
+	print("Progress: 5%")
+
+	# train new tokenizer on new corpus
+	tokenizer = train_tokenizer(
 		corpus,
 		vocab_size=extended_vocab_size,
 		min_frequency=min_frequency,
+		suffix=suffix,
+		bert_normalizer=bert_normalizer,
 		special_tokens=special_tokens,
-		initial_alphabet=initial_alphabet)
-	if save_prefix and save_dir:
-		tokenizer.save_model(save_dir, prefix=save_prefix)
+		save_prefix=save_prefix,
+		save_dir=save_dir,
+		initial_alphabet=initial_alphabet
+	)
+	print("Progress: 15%")
+
+	# tokenize new corpus
+	tokenized_corpus = tokenize_corpus(corpus, tokenizer)
+	print("Progress: 60%")
+
+	# take most frequent tokens
+	counts = Counter([token for seq in tqdm(tokenized_corpus) for token in seq])
+	print("Progress: 70%")
+
+	# add them to vocab until we reach n tokens
+	old_vocab = old_tokenizer.get_vocab().keys()
+	new_vocab = set(old_vocab)
+	for token, _ in counts.most_common():
+		new_vocab.add(token)
+		if len(new_vocab) >= extended_vocab_size:
+			break
+	new_vocab = list(new_vocab)
+	print("Progress: 75%")
+
+	# align new vocab with old vocab and sort
+	v1 = old_tokenizer.get_vocab()
+	v2 = {k:v for k,v in zip(new_vocab, range(len(new_vocab)))}
+	v3 = v1.copy()
+	v3.update({k:v for k,v in zip(set(v2.keys()) - set(v1.keys()), range(len(v1), len(v1) + len(v2) - len(v1)))})
+	new_vocab = v3.copy()
+	print("Progress: 80%")
+
+	# update old merges with new merges
+	with open(os.path.join(model_dir, model_prefix+"-merges.txt"), "r") as f:
+		version = f.readline()
+		old_merges = np.array([line.split() for line in f.readlines()])
+	with open(os.path.join(save_dir, save_prefix+"-merges.txt"), "r") as f:
+		_new_merges = np.array([line.split() for line in f.readlines()[1:]])
+	new_merges = old_merges.copy()
+	merges_stack = LifoQueue()
+	for merge in _new_merges[::-1]:
+		merges_stack.put(merge)
+	print("Progress: 85%")
+
+	def merge_present(merge):
+		return any((new_merges == merge).all(1))
+
+	def merge_result_present(token):
+		for merge in new_merges:
+			if "".join(merge) == token:
+				return True
+		return False
+
+	def get_merge(token):
+		for merge in _new_merges:
+			if "".join(merge) == token:
+				return merge
+		return None
+
+	we_want = set()
+	cont = False
+	while not merges_stack.empty():
+		merge = merges_stack.get()
+		merge_added = merge_present(merge) # merge already in new merges
+		result_token_in_vocab = "".join(merge) in new_vocab
+		we_want_result_token = "".join(merge) in we_want
+		if not merge_added and (result_token_in_vocab or we_want_result_token):
+			for m in merge:
+				if m in new_vocab: continue
+				if not merge_result_present(m):
+					m_merge = get_merge(m)
+					assert m_merge is not None, f"Merge {m} not found"
+					merges_stack.put(m_merge)
+					we_want.add(m)
+					cont = True
+			if cont:
+				cont = False
+				continue
+			new_merges = np.vstack([new_merges, merge])
+	for token in we_want:
+		if token not in new_vocab:
+			new_vocab[token] = len(new_vocab)
+	print("Progress: 90%")
+	
+	def ensure_merges_consistent(merges, vocab):
+		merges = merges[::-1]
+		for i in range(len(merges)):
+			merge = merges[i]
+			for m in merge:
+				assert m in vocab, f"Merge {m} not in vocab"
+	ensure_merges_consistent(new_merges, new_vocab)
+	print("Progress: 95%")
+
+	# save new vocab and merges
+	sorted_vocab = dict(sorted(new_vocab.items(), key=lambda x: x[1]))
+	json.dump(sorted_vocab, open(os.path.join(save_dir, save_prefix+"-vocab.json"), "w"))
+	with open(os.path.join(save_dir, save_prefix+"-merges.txt"), "w") as f:
+		f.write(version)
+		f.write("\n".join([" ".join(merge) for merge in new_merges]))
+	print("Progress: 99%")
+	
+	tokenizer = load_tokenizer(save_dir, save_prefix)
+	print("Progress: 100%")
+	
 	return tokenizer
 
 def load_tokenizer(
