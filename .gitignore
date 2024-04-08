@@ -1,3 +1,4 @@
 test.ipynb
 data/sitges_access.csv
 __pycache__
+*out.pt
