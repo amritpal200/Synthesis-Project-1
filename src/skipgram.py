@@ -712,3 +712,21 @@ def get_idx(
 		try: tokens_idx.append(word2idx[token])
 		except KeyError: tokens_idx.append(word2idx[get_included(token, word2idx.keys())])
 	return torch.tensor(tokens_idx, dtype=torch.int)
+
+def extract_embeddings(
+		sequence: Iterable[str],
+		embeddings: torch.Tensor,
+		idx2word: Dict[int, str],
+		tokenizer: CharBPETokenizer
+) -> List[torch.Tensor]:
+	"""
+	Tokenizes a given sequence and returns the embeddings for each token.
+	"""
+	embeddings_sequence = []
+	word2idx = {word: idx for idx, word in idx2word.items()}
+	for string in tqdm(sequence):
+		tokens = tokenizer.encode(string).tokens
+		tokens_idx = get_idx(tokens, word2idx)
+		embedding = embeddings[tokens_idx]
+		embeddings_sequence.append(embedding.to(torch.float32))
+	return embeddings_sequence
