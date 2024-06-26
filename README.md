@@ -25,8 +25,11 @@ cd Synthesis-Project-1
 
 ## Project Structure
 This project is divided in three folders, each of them containing different kinds of files.
+
 **data** folder is used to safe the files used for the data preprocessing, mainly compossed by .csv files.
+
 **models** folder is used to safe the models developed to solve the challenge, apart form other models used for create embeddings on specific features of the data.
+
 **src** folder is used to safe the code files, used to create to preprocess the data, develop and train the model. The files resulting from the execution of these files are saved on the proir folders.
 
 ## Usage
