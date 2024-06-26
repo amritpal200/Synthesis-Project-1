@@ -38,7 +38,7 @@ This project is divided into three folders, each containing different kinds of f
 ## Usage
 To reproduce the results obtained for each model, you will need to execute the following files, all of them from the src folder.
 
-First of all, we need to convert the log files to .csv format to work with them. For this, we need to execute the file `log_to_csv.py`. The resulting .csv files will be saved in the data folder.
+First of all, we need to convert the log files to .csv format to work with them. For this, we need to execute the file `log_to_csv.ipynb`. The resulting .csv files will be saved in the data folder.
 
 ### Autoencoders
 To preprocess the data for the autoencoders, we need to execute two different files.
