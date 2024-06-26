@@ -33,5 +33,10 @@ This project is divided in three folders, each of them containing different kind
 **src** folder is used to safe the code files, used to create to preprocess the data, develop and train the model. The files resulting from the execution of these files are saved on the proir folders.
 
 ## Usage
+To reproduce the results obtained for each model, there would be need to ejecute the following files, all of them from the src folder.
 
+First of all, we need to pass the log files to csv ones, to be able to work with them. For this we need to ejecute the file `nombre`. The resulting .cvs files will be saved on the data folder.
+
+### Autoencoders
+To preproces the data to be used for the autoencoders, we need to execute two different files. The first one is `data_cleaning_autoencoder.ipynb`
 
