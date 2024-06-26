@@ -3,3 +3,9 @@ data/sitges_access.csv
 data/sitges_access_clean.csv
 __pycache__
 *out.pt
+data/sitges_access_clean_whole_set_but_last.csv
+data/sitges_access_prepared_whole_set_but_last.csv
+data/sitges_access.20240129.csv
+data/sitges_access_clean_last.csv
+data/sitges_access_prepared_last.csv
+pruebas.ipynb
