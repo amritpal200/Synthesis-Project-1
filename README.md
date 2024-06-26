@@ -23,6 +23,9 @@ cd Synthesis-Project-1
 - tqdm
 - fasttext
 
+### Donwload the log files
+Download the log files avaliable in the Campus Virtual and safe them in the dat afolder of this project.
+
 ## Project Structure
 This project is divided in three folders, each of them containing different kinds of files.
 
