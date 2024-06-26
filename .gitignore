@@ -5,6 +5,13 @@ __pycache__
 *out.pt
 data/sitges_access_clean_whole_set_but_last.csv
 data/sitges_access_prepared_whole_set_but_last.csv
+data/sitges_access.20240122.csv
+data/sitges_access.20240123.csv
+data/sitges_access.20240124.csv
+data/sitges_access.20240125.csv
+data/sitges_access.20240126.csv
+data/sitges_access.20240127.csv
+data/sitges_access.20240128.csv
 data/sitges_access.20240129.csv
 data/sitges_access_clean_last.csv
 data/sitges_access_prepared_last.csv
