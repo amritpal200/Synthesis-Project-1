@@ -29,7 +29,7 @@ Once you have the repository on your local machine, download the log files avail
 ## Project Structure
 This project is divided into three folders, each containing different kinds of files.
 
-**data** folder is used to save the files used for data preprocessing, mainly composed of .csv files.
+**data** folder is used to save the files of data and preprocessed data.
 
 **models** folder is used to save the models developed to solve the challenge, apart from other models used to create embeddings on specific features of the data.
 
