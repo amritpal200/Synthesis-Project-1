@@ -16,3 +16,4 @@ data/sitges_access.20240129.csv
 data/sitges_access_clean_last.csv
 data/sitges_access_prepared_last.csv
 pruebas.ipynb
+*.log
