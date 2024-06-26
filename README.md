@@ -55,3 +55,5 @@ To train the normal autoencoder model, we will need to execute the file called `
 #### LSTM Autoencoder
 To train the LSTM autoencoder model, we will need to execute the file called `LSTM_Autoencoder.ipynb`. The result of the execution will be a file called `LSTMAutoencoder.pt` that will be saved in the models folder. This resulting file is the model ready to be used.
 
+To compare the resultsof these two models, we will execute the file called `results_autoencoders.ipynb`. The results of this file will be a printed graph for each of the models representing the score of each log given its error value on the test set. Additionally, at the end of this file will be printed a *Dataframe* object for each of the models showing the anomalies based on a editable threshold.
+
