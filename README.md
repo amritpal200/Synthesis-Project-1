@@ -10,8 +10,10 @@ The aim of this project is to develop an Artificial Intelligence model capable o
 
 ## Installation
 ### Clone the repository
+```
 git clone https://github.com/amritpal200/Synthesis-Project-1.git
 cd Synthesis-Project-1
+```
 
 ### Install the following dependencies:
 - numpy
@@ -21,3 +23,4 @@ cd Synthesis-Project-1
 - tqdm
 - fasttext
 
+## Project Structure
