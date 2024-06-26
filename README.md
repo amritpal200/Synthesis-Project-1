@@ -24,7 +24,7 @@ cd Synthesis-Project-1
 - fasttext
 
 ### Donwload the log files
-Download the log files avaliable in the Campus Virtual and safe them in the dat afolder of this project.
+Once you have the repositorry on your local, download the log files avaliable in the Campus Virtual and safe them in the data folder of this project.
 
 ## Project Structure
 This project is divided in three folders, each of them containing different kinds of files.
@@ -41,5 +41,9 @@ To reproduce the results obtained for each model, there would be need to ejecute
 First of all, we need to pass the log files to csv ones, to be able to work with them. For this we need to ejecute the file `nombre`. The resulting .cvs files will be saved on the data folder.
 
 ### Autoencoders
-To preproces the data to be used for the autoencoders, we need to execute two different files. The first one is `data_cleaning_autoencoder.ipynb`
+To preproces the data to be used for the autoencoders, we need to execute two different files. 
+
+The first one is `data_cleaning_autoencoder.ipynb`. This file is the one used to clean the data and it will be needed to be executed once to create a combined csv of all the .csv logs but the last file and clean the resulting file, and then, there would be needed to execut the last cell, but changing the `file` variable definition from 'file = f"../data/{files[0]}.csv"' to 'file = f"../data/{files[1]}.csv"', which would clean the .csv used as test. The result of these executions will be two different .csv files called `sitges_access_clean_whole_set_but_last.csv` and `sitges_access_clean_last.csv`. Both files will be saved on the data folder.
+
+The second one is `data_preprocessing_autoencoder.ipynb`. This file is used to preprocess the data once is cleaned. We will execute this file twice, the first one as it is and the second one changing the `file` variable definition from 'file = f"../data/{files[0]}.csv"' to 'file = f"../data/{files[1]}.csv"'. The result of these executions will be two different .csv files called `sitges_access_prepared_whole_set_but_last.csv` and `sitges_access_prepared_last.csv`. Both files will be saved on the data folder.
 
