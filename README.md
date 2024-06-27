@@ -69,3 +69,6 @@ An implementation of Deeplog parameter value model as explained in the paper can
 ### Combination of Autoencoder and Deeplog
 An implementation of the combination of the normal Autoencoder and Deeplog can be found in `combo.ipynb`. The same clean dataset as in Deeplog is used, so a pretrained Deeplog model can be loaded. For consistency, the autoencoder is trained on the same dataset.  
 We've trained such combination model and processed a set of logs. Example of URLs from logs that have been detected as highly potential anomalies can be found in the `data` folder.
+
+### Transformer
+To use the Transformer model, first obtain scores through Wazuk. For this, use `wazuk.py` located in the `src` folder. Once you have a `.csv` file with the scores, preprocess this file for training. To do this, pass the `.csv` file with Wazuk scores through `data_preprocessing_transformer.py`. This will generate three different `.csv` files: training, validation, and test files. With these files, you can proceed to training using the `transformer_model.pt` file.
