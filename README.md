@@ -34,7 +34,7 @@ Once you have the repository on your local machine, place your `.log` files in t
 ## Project Structure
 This project is divided into three folders, each containing different kinds of files.
 
-- **data** folder is used to save the files of data and preprocessed data.
+- **data** folder is used to save the files of data and preprocessed data. It contains a small dataset `sitges_access.csv` for demo purposes.
 - **models** folder is used to save the models developed to solve the challenge, apart from other models used to create embeddings on specific features of the data.
 - **src** folder is used to save the code files used to preprocess the data, develop, and train the model. The files resulting from the execution of these scripts are saved in the prior folders.
 
@@ -60,3 +60,11 @@ To train the LSTM autoencoder model, we will need to execute the file called `LS
 
 To compare the results of these two models, we will execute the file called `results_autoencoders.ipynb`. The results of this file will be a printed graph for each of the models representing the score of each log given its error value on the datasetset used for results. Additionally, at the end of this file will be printed a *Dataframe* object for each of the models showing the anomalies based on a editable threshold.
 
+### Deeplog
+Deeplog requires a complex preprocessing, which is implemented in `data_cleaning.ipynb`. Executing this file will preprocess the `sitges_access.csv` dataset and create a new `sitges_access_clean.csv`.  
+> **Note**: in order to come up with such preprocessing, a thorough analysis was made and can be seen in files `data_analysis_X.ipynb`.
+
+An implementation of Deeplog parameter value model as explained in the paper can be found in `deeplog.py`, and a demonstration of how can be trained and used is in `deeplog.ipynb`.
+
+### Combination of Autoencoder and Deeplog
+An implementation of the combination of the normal Autoencoder and Deeplog can be found in `combo.ipynb`. The same clean dataset as in Deeplog is used, so a pretrained Deeplog model can be loaded. For consistency, the autoencoder is trained on the same dataset.
