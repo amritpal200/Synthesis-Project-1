@@ -15,25 +15,28 @@ git clone https://github.com/amritpal200/Synthesis-Project-1.git
 cd Synthesis-Project-1
 ```
 
-### Install the following dependencies:
-- numpy
-- torch
-- pandas
-- scikit-learn
-- tqdm
-- fasttext
+### Install the dependencies:
+```
+pip install -r requirements.txt
+```
+If you have GPU:
+```
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+```
+Otherwise for CPU:
+```
+pip install torch torchvision torchaudio
+```
 
 ### Donwload the log files
-Once you have the repository on your local machine, download the log files available in the Campus Virtual and save them in the data folder of this project.
+Once you have the repository on your local machine, place your `.log` files in the data folder of this project, in order for the models to process them.
 
 ## Project Structure
 This project is divided into three folders, each containing different kinds of files.
 
-**data** folder is used to save the files of data and preprocessed data.
-
-**models** folder is used to save the models developed to solve the challenge, apart from other models used to create embeddings on specific features of the data.
-
-**src** folder is used to save the code files used to preprocess the data, develop, and train the model. The files resulting from the execution of these scripts are saved in the prior folders.
+- **data** folder is used to save the files of data and preprocessed data.
+- **models** folder is used to save the models developed to solve the challenge, apart from other models used to create embeddings on specific features of the data.
+- **src** folder is used to save the code files used to preprocess the data, develop, and train the model. The files resulting from the execution of these scripts are saved in the prior folders.
 
 ## Usage
 To reproduce the results obtained for each model, you will need to execute the following files, all of them from the src folder.
