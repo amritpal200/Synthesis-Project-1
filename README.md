@@ -34,9 +34,9 @@ Once you have the repository on your local machine, place your `.log` files in t
 ## Project Structure
 This project is divided into three folders, each containing different kinds of files.
 
-- **data** folder is used to save the files of data and preprocessed data. It contains a small dataset `sitges_access.csv` for demo purposes.
-- **models** folder is used to save the models developed to solve the challenge, apart from other models used to create embeddings on specific features of the data.
-- **src** folder is used to save the code files used to preprocess the data, develop, and train the model. The files resulting from the execution of these scripts are saved in the prior folders.
+- `data` folder is used to save the files of data and preprocessed data. It contains a small dataset `sitges_access.csv` for demo purposes.
+- `models` folder is used to save the models developed to solve the challenge, apart from other models used to create embeddings on specific features of the data.
+- `src` folder is used to save the code files used to preprocess the data, develop, and train the model. The files resulting from the execution of these scripts are saved in the prior folders.
 
 ## Usage
 To reproduce the results obtained for each model, you will need to execute the following files, all of them from the src folder.
@@ -67,4 +67,5 @@ Deeplog requires a complex preprocessing, which is implemented in `data_cleaning
 An implementation of Deeplog parameter value model as explained in the paper can be found in `deeplog.py`, and a demonstration of how can be trained and used is in `deeplog.ipynb`.
 
 ### Combination of Autoencoder and Deeplog
-An implementation of the combination of the normal Autoencoder and Deeplog can be found in `combo.ipynb`. The same clean dataset as in Deeplog is used, so a pretrained Deeplog model can be loaded. For consistency, the autoencoder is trained on the same dataset.
+An implementation of the combination of the normal Autoencoder and Deeplog can be found in `combo.ipynb`. The same clean dataset as in Deeplog is used, so a pretrained Deeplog model can be loaded. For consistency, the autoencoder is trained on the same dataset.  
+We've trained such combination model and processed a set of logs. Example of URLs from logs that have been detected as highly potential anomalies can be found in the `data` folder.
