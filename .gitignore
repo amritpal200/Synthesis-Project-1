@@ -17,3 +17,5 @@ data/sitges_access_clean_last.csv
 data/sitges_access_prepared_last.csv
 pruebas.ipynb
 *.log
+data/baixcamp.csv
+models/deeplog/*_0_*
