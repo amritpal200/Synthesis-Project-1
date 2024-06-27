@@ -11,7 +11,7 @@ import os
 from scripts.wazuh_logtest import WazuhLogtest
 
 n = 8
-#TODO set log_file and out_file as parameters
+# Change here the log file and output file
 log_file = f'/media/eric/D/cloud_eric/universitat/4t_semestre/synthesis_project/logs/sitges_access.2024012{n}.log'
 out_file = f'/media/eric/D/repos/Synthesis-Project-1/data/sitges_access.2024012{n}_level.csv'
 
