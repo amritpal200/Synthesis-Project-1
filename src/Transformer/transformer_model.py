@@ -390,60 +390,6 @@ def train_epoch(
 
   return best_loss
 
-# Set hyperparameters
-max_sequence_length_dataset = 150
-max_sequence_length = 310
-batch_size = 150
-dim = 200
-depth = 2
-heads = 4
-mlp_dim = 512
-local_window_size = 5
-LR = 0.0005
-SDLR_MILESTONES = [1,2]
-GAMMA = 0.1
-N_EPOCHS = 2
-# Initialize best_loss and loss_history
-best_loss = float('inf')
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') # Set device
-
-train_filename = '/content/train.csv' # Path to the training data
-train_dataset = DatasetFromCsvFile(train_filename, max_sequence_length_dataset) # Create training dataset
-train_data_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True) # Create data loader
-
-val_filename = '/content/validate.csv' # Path to the validation data
-val_dataset = DatasetFromCsvFile(val_filename, max_sequence_length_dataset) # Create validation dataset
-val_data_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=True) # Create data loader
-
-# Initialize the model, optimizer, scheduler, and loss history
-model = TransformerAttention(dim=dim, depth=depth, heads=heads, mlp_dim=mlp_dim, max_sequence_length=max_sequence_length, local_window_size=local_window_size, device=device).to(device)
-optimizer = torch.optim.Adam(model.parameters(), lr=LR)
-scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=SDLR_MILESTONES, gamma=GAMMA)
-loss_history = []
-
-# Count total parameters
-total_params = sum(p.numel() for p in model.parameters())
-# Count parameters that require gradients
-trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-
-print(f"Total parameters: {total_params}")
-print(f"Trainable parameters: {trainable_params}")
-
-# Training loop
-for epoch in range(N_EPOCHS):
-  print(f'Epoch {epoch+1}/{N_EPOCHS}') # Print epoch
-  # Train the model
-  best_loss = train_epoch(model, optimizer, train_data_loader, val_data_loader, loss_history, device)
-  # Plotting the training loss after each epoch
-  plt.figure(figsize=(10, 5))
-  plt.plot(loss_history, label='Training Loss')
-  plt.xlabel('Batch')
-  plt.ylabel('Loss')
-  plt.title('Training Loss Over Time')
-  plt.legend()
-  plt.show()
-
-
 def evaluate(
     model: torch.nn.Module,
     data_loader: DataLoader,
@@ -466,7 +412,60 @@ def evaluate(
       for i in range(len(target)):
         print(f"correct is {target[i]} and predicted is {output[i]}")
 
-dataset = DatasetFromCsvFile("/content/test_sampled.csv", max_sequence_length_dataset) # Create test dataset
-val_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True) # Create data loader
-evaluate(model, val_loader, [], device) # Evaluate the model
+if __name__ == '__main__':
+	# Set hyperparameters
+	max_sequence_length_dataset = 150
+	max_sequence_length = 310
+	batch_size = 150
+	dim = 200
+	depth = 2
+	heads = 4
+	mlp_dim = 512
+	local_window_size = 5
+	LR = 0.0005
+	SDLR_MILESTONES = [1,2]
+	GAMMA = 0.1
+	N_EPOCHS = 2
+	# Initialize best_loss and loss_history
+	best_loss = float('inf')
+	device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') # Set device
 
+	train_filename = '/content/train.csv' # Path to the training data
+	train_dataset = DatasetFromCsvFile(train_filename, max_sequence_length_dataset) # Create training dataset
+	train_data_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True) # Create data loader
+
+	val_filename = '/content/validate.csv' # Path to the validation data
+	val_dataset = DatasetFromCsvFile(val_filename, max_sequence_length_dataset) # Create validation dataset
+	val_data_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=True) # Create data loader
+
+	# Initialize the model, optimizer, scheduler, and loss history
+	model = TransformerAttention(dim=dim, depth=depth, heads=heads, mlp_dim=mlp_dim, max_sequence_length=max_sequence_length, local_window_size=local_window_size, device=device).to(device)
+	optimizer = torch.optim.Adam(model.parameters(), lr=LR)
+	scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=SDLR_MILESTONES, gamma=GAMMA)
+	loss_history = []
+
+	# Count total parameters
+	total_params = sum(p.numel() for p in model.parameters())
+	# Count parameters that require gradients
+	trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+
+	print(f"Total parameters: {total_params}")
+	print(f"Trainable parameters: {trainable_params}")
+
+	# Training loop
+	for epoch in range(N_EPOCHS):
+		print(f'Epoch {epoch+1}/{N_EPOCHS}') # Print epoch
+	# Train the model
+	best_loss = train_epoch(model, optimizer, train_data_loader, val_data_loader, loss_history, device)
+	# Plotting the training loss after each epoch
+	plt.figure(figsize=(10, 5))
+	plt.plot(loss_history, label='Training Loss')
+	plt.xlabel('Batch')
+	plt.ylabel('Loss')
+	plt.title('Training Loss Over Time')
+	plt.legend()
+	plt.show()
+
+	dataset = DatasetFromCsvFile("/content/test_sampled.csv", max_sequence_length_dataset) # Create test dataset
+	val_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True) # Create data loader
+	evaluate(model, val_loader, [], device) # Evaluate the model
