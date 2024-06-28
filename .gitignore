@@ -18,3 +18,4 @@ pruebas.ipynb
 *.log
 data/baixcamp.csv
 models/deeplog/*_0_*
+data/test.csv
